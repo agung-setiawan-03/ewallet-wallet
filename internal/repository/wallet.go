@@ -37,6 +37,15 @@ func (r *WalletRepo) UpdateBalance(ctx context.Context, userID int, amount float
 	return wallet, err
 }
 
-func (r *WalletRepo) CreateWalletHistory(ctx context.Context, walletHistory *models.Wallet) error {
-	return r.DB.Create(walletHistory).Error
+func (r *WalletRepo) CreateWalletTrx(ctx context.Context, walletTrx *models.WalletTransaction) error {
+	return r.DB.Create(walletTrx).Error
+}
+
+func (r *WalletRepo) GetWalletTransactionByReference(ctx context.Context, reference string) (models.WalletTransaction, error) {
+	var (
+		resp models.WalletTransaction
+	)
+	err := r.DB.Where("reference = ?", reference).Last(&resp).Error
+
+	return resp, err
 }

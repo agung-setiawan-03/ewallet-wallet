@@ -19,10 +19,9 @@ type WalletTransaction struct {
 	WalletID              int     `gorm:"column:wallet_id"`
 	Amount                float64 `gorm:"column:amount;type:decimal(15,2)"`
 	WalletTransactionType string  `gorm:"column:wallet_transaction_type;type:ENUM('CREDIT','DEBIT')"`
-	Reference             string  `gorm:"column:reference;type:varchar(255)"`
-
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	Reference             string  `gorm:"column:reference;type:varchar(255);unique"`
+	CreatedAt             time.Time
+	UpdatedAt             time.Time
 }
 
 func (*WalletTransaction) TableName() string {
