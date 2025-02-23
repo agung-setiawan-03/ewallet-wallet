@@ -9,6 +9,8 @@ import (
 
 type IWalletRepo interface {
 	CreateWallet(ctx context.Context, wallet *models.Wallet) error
+	UpdateBalance(ctx context.Context, userID int, amount float64) error
+	CreateWalletHistory(ctx context.Context, walletHistory *models.Wallet) error 
 }
 
 type IWalletService interface {

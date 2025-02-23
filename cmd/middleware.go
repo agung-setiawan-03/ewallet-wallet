@@ -1,15 +1,18 @@
 package cmd
 
 import (
+	"ewallet-wallet/external"
 	"ewallet-wallet/helpers"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-func (d *Dependency) MiddlewareRefreshToken(c *gin.Context) {
+func (d *Dependency) MiddlewareValidateToken(c *gin.Context) {
 
+	var (
+		log = helpers.Logger
+	)
 	auth := c.Request.Header.Get("Authorization")
 	if auth == "" {
 		log.Println("authorization empty")
@@ -18,7 +21,15 @@ func (d *Dependency) MiddlewareRefreshToken(c *gin.Context) {
 		return
 	}
 
-	// c.Set("token")
+	tokenData, err := external.ValidateToken(c.Request.Context(), auth)
+	if err != nil {
+		log.Error(err)
+		helpers.SendResponseHTTP(c, http.StatusUnauthorized, "unauthorized", nil)
+		c.Abort()
+		return
+	}
+
+	c.Set("token", tokenData)
 
 	c.Next()
 }
