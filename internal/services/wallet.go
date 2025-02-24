@@ -17,9 +17,9 @@ func (s *WalletService) Create(ctx context.Context, wallet *models.Wallet) error
 	return s.WalletRepo.CreateWallet(ctx, wallet)
 }
 
-func (s *WalletService) CreditBalance(ctx context.Context, userID int, req models.TransactionRequest) (models.TransactionResponse, error) {
+func (s *WalletService) CreditBalance(ctx context.Context, userID int, req models.TransactionRequest) (models.BalanceResponse, error) {
 	var (
-		resp models.TransactionResponse
+		resp models.BalanceResponse
 	)
 
 	history, err := s.WalletRepo.GetWalletTransactionByReference(ctx, req.Reference)
@@ -53,9 +53,9 @@ func (s *WalletService) CreditBalance(ctx context.Context, userID int, req model
 	return resp, nil
 }
 
-func (s *WalletService) DebitBalance(ctx context.Context, userID int, req models.TransactionRequest) (models.TransactionResponse, error) {
+func (s *WalletService) DebitBalance(ctx context.Context, userID int, req models.TransactionRequest) (models.BalanceResponse, error) {
 	var (
-		resp models.TransactionResponse
+		resp models.BalanceResponse
 	)
 
 	history, err := s.WalletRepo.GetWalletTransactionByReference(ctx, req.Reference)
@@ -85,6 +85,21 @@ func (s *WalletService) DebitBalance(ctx context.Context, userID int, req models
 	}
 
 	resp.Balance = wallet.Balance - req.Amount
+
+	return resp, nil
+}
+
+func (s *WalletService) GetBalance(ctx context.Context, userID int) (models.BalanceResponse, error) {
+	var (
+		resp models.BalanceResponse
+	)
+
+	wallet, err := s.WalletRepo.GetWalletByUserID(ctx, userID)
+	if err != nil {
+		return resp, errors.Wrap(err, "Failed to get wallet")
+	}
+
+	resp.Balance = wallet.Balance
 
 	return resp, nil
 }
