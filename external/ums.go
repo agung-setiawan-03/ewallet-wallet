@@ -11,7 +11,11 @@ import (
 	"github.com/pkg/errors"
 )
 
-func ValidateToken(ctx context.Context, token string) (models.TokenData, error) {
+type External struct {
+
+}
+
+func (*External) ValidateToken(ctx context.Context, token string) (models.TokenData, error) {
 	var (
 		resp models.TokenData
 	)
